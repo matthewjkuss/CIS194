@@ -1,28 +1,20 @@
+{-# OPTIONS_GHC -Wall #-}
+
 module Homework01  (
+  -- Ex. 1
   toDigits,
   toDigitsRev,
+  -- Ex. 2
   doubleEveryOther,
+  -- Ex. 3
   sumDigits,
-  validate
+  -- Ex. 4
+  validate,
+  -- Ex. 5
+  Peg,
+  Move,
+  hanoi
 ) where
-
-import Prelude (Integer, Bool, (==), (>=), (.), (*), (+), (++), div, mod, otherwise)
-
--- Implementation of common library functions
-
-reverse :: [a] -> [a]
-reverse [] = []
-reverse (x:xs) = reverse xs ++ [x]
-
-map :: (a -> b) -> [a] -> [b]
-map _ [] = []
-map f (x:xs) = f x : map f xs
-
-concat :: [[a]] -> [a]
-concat [] = []
-concat (x:xs) = x ++ concat xs
-
--- The rest
 
 toDigitsRev :: Integer -> [Integer]
 toDigitsRev n 
@@ -32,17 +24,46 @@ toDigitsRev n
 toDigits :: Integer -> [Integer]
 toDigits = reverse . toDigitsRev
 
+doubleEveryOther :: [Integer] -> [Integer]
+doubleEveryOther ls = conditionalDouble <$> zip doubleFlags ls
+  where
+    conditionalDouble (double, x) = if double then 2*x else x
+    doubleFlags = cycle (
+      if length ls `mod` 2 == 0 
+      then [True, False] 
+      else [False, True])
+
+{-
+Alternatively (and perhaps more simply) we can define:
+
 doubleEveryOtherRev :: [Integer] -> [Integer]
 doubleEveryOtherRev [] = []
 doubleEveryOtherRev (x:[]) = [x]
 doubleEveryOtherRev (x:y:xs) = x : 2*y : doubleEveryOtherRev xs
 
-doubleEveryOther :: [Integer] -> [Integer]
+and then simple we have:
+
 doubleEveryOther = reverse . doubleEveryOtherRev . reverse
+-}
 
 sumDigits :: [Integer] -> Integer
 sumDigits [] = 0
 sumDigits (x:xs) = x + sumDigits xs
 
 validate :: Integer -> Bool
-validate = (\x -> x `mod` 10 == 0) . sumDigits . concat . map toDigits . doubleEveryOther . toDigits
+validate = 
+    (\x -> x `mod` 10 == 0) 
+  . sumDigits 
+  . concatMap toDigits 
+  . doubleEveryOther 
+  . toDigits
+
+type Peg = String
+type Move = (Peg, Peg)
+
+hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi 0 _ _ _ = []
+hanoi n a b c = 
+     hanoi (n-1) a c b 
+  ++ [(a, b)]
+  ++ hanoi (n-1) c b a
