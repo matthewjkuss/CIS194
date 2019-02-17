@@ -1,19 +1,9 @@
-{-# OPTIONS_GHC -Wall #-}
-
 module Homework01  (
-  -- Ex. 1
-  toDigits,
-  toDigitsRev,
-  -- Ex. 2
-  doubleEveryOther,
-  -- Ex. 3
-  sumDigits,
-  -- Ex. 4
-  validate,
-  -- Ex. 5
-  Peg,
-  Move,
-  hanoi
+  {- Ex.1 -} toDigits, toDigitsRev,
+  {- Ex.2 -} doubleEveryOther,
+  {- Ex.3 -} sumDigits,
+  {- Ex.4 -} validate,
+  {- Ex.5 -} Peg, Move, hanoi
 ) where
 
 toDigitsRev :: Integer -> [Integer]
@@ -28,22 +18,19 @@ doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther ls = conditionalDouble <$> zip doubleFlags ls
   where
     conditionalDouble (double, x) = if double then 2*x else x
-    doubleFlags = cycle (
+    doubleFlags = cycle $
       if length ls `mod` 2 == 0 
       then [True, False] 
-      else [False, True])
+      else [False, True]
 
 {-
 Alternatively (and perhaps more simply) we can define:
-
-doubleEveryOtherRev :: [Integer] -> [Integer]
-doubleEveryOtherRev [] = []
-doubleEveryOtherRev (x:[]) = [x]
-doubleEveryOtherRev (x:y:xs) = x : 2*y : doubleEveryOtherRev xs
-
+  doubleEveryOtherRev :: [Integer] -> [Integer]
+  doubleEveryOtherRev [] = []
+  doubleEveryOtherRev (x:[]) = [x]
+  doubleEveryOtherRev (x:y:xs) = x : 2*y : doubleEveryOtherRev xs
 and then simple we have:
-
-doubleEveryOther = reverse . doubleEveryOtherRev . reverse
+  doubleEveryOther = reverse . doubleEveryOtherRev . reverse
 -}
 
 sumDigits :: [Integer] -> Integer
